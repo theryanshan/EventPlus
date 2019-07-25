@@ -20,28 +20,29 @@ import external.TicketMasterClient;
 @WebServlet("/search")
 public class SearchItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public SearchItem() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public SearchItem() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		double lat = Double.parseDouble(request.getParameter("lat"));
 		double lon = Double.parseDouble(request.getParameter("lon"));
 		TicketMasterClient client = new TicketMasterClient();
-		List<Item> events = client.search(lat, lon, "event");
+		List<Item> items = client.search(lat, lon, null);
 		JSONArray JArray = new JSONArray();
-		for (Item i : events) {
+		for (Item i : items) {
 			JArray.put(i.toJSONObject());
 		}
-		 
 		RpcHelper.writeJsonArray(response, JArray);
 	}
 

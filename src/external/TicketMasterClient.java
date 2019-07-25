@@ -34,8 +34,9 @@ public class TicketMasterClient {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		String query = String.format("apikey=%s&latlong=%s,%s&keyword=%s&radius=%s", API_KEY, lat, lon, keyword, 50);
 
+		String geoHash = GeoHash.encodeGeohash(lat, lon, 8);
+		String query = String.format("apikey=%s&geoPoint=%s&keyword=%s&radius=%s", API_KEY, geoHash, keyword, 50);
 		String url = HOST + ENDPOINT + "?" + query;
 		StringBuilder responseBody = new StringBuilder();
 
@@ -78,7 +79,7 @@ public class TicketMasterClient {
 		List<Item> itemList = new ArrayList<>();
 		for (int i = 0; i < events.length(); ++i) {
 			JSONObject event = events.getJSONObject(i);
-			
+
 			ItemBuilder builder = new ItemBuilder();
 			if (!event.isNull("id")) {
 				builder.setItemId(event.getString("id"));
@@ -92,11 +93,11 @@ public class TicketMasterClient {
 			if (!event.isNull("distance")) {
 				builder.setDistance(event.getDouble("distance"));
 			}
-			
+
 			builder.setAddress(getAddress(event));
 			builder.setCategories(getCategories(event));
 			builder.setImageUrl(getImageUrl(event));
-			
+
 			itemList.add(builder.build());
 		}
 		return itemList;
